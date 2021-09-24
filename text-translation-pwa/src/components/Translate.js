@@ -12,6 +12,7 @@ export default function Translate(){
 
     const [inputText ,setInputText] = useState ('');
 
+    //language source detection
     const [detectLanguageKey, setdetectedLanguageKey] = useState('');
 
     const getLanguageSource = () => {
@@ -19,26 +20,26 @@ export default function Translate(){
             q : inputText
         }). then ((response) => {
             setdetectedLanguageKey(response.data[0].language);
-            console.log ("language successfully detected");
-            console.log (response);
         })
     }
+
+    // Set language List
+    const [languageList,setLanguageList] = useState ([]);
 
     useEffect (() => {
         axios.get(`https://libretranslate.de/languages`)
         .then ((response) => {
-            // console.log(response.data);
             setLanguageList(response.data);
         })
     })
 
-    const [languageList,setLanguageList] = useState ([]);
+    
 
+    //get selected translate language key
     const [selectedLanguageKey , setLanguageKey] = useState ('');
 
     const languageKey = (selectedLanguage) => {
         setLanguageKey(selectedLanguage.target.value);
-        console.log (selectedLanguage.target.value);
     }
 
     const [resultText , setResultText] = useState ('');
@@ -48,9 +49,18 @@ export default function Translate(){
 
         let data = { q:inputText , source :detectLanguageKey , target: selectedLanguageKey}
 
+        // console.log ("####################################");
+        // console.log ("01. Input Text : " + inputText);
+        // console.log ("02. language source : " + detectLanguageKey);
+        // console.log ("03. selected language is " + selectedLanguageKey);
+        // console.log ("####################################");
+
+
         axios.post ('https://libretranslate.de/translate',data)
         .then((response)=>{
-            setResultText(response.data.translateText);
+            console.log(response.data.translatedText);
+            setResultText(response.data.translatedText);
+
         })
     }
 
@@ -93,6 +103,7 @@ export default function Translate(){
                         color="orange"
                         size="large"
                         onClick={translateText}
+                        // value = {resultText}
                     >
                         <Icon name='translate' />
                         Translate</Button>
